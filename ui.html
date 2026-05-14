@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portfolio Tracker</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      background: #ffffff;
+      color: #111827;
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      border-right: 1px solid #e5e7eb;
+      padding: 28px 14px;
+    }
+
+    .logo {
+      font-size: 26px;
+      font-weight: 700;
+      margin-bottom: 42px;
+      padding-left: 10px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 15px 18px;
+      margin-bottom: 10px;
+      border-radius: 6px;
+      color: #111827;
+      font-size: 17px;
+      cursor: pointer;
+    }
+
+    .nav-item.active {
+      background: #eef4ff;
+      color: #2563eb;
+      font-weight: 600;
+    }
+
+    .nav-icon {
+      width: 24px;
+      text-align: center;
+      font-size: 20px;
+    }
+
+    .main {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar {
+      height: 82px;
+      border-bottom: 1px solid #e5e7eb;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      padding: 0 34px;
+      gap: 16px;
+      font-size: 16px;
+    }
+
+    .content {
+      padding: 30px;
+    }
+
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 28px;
+    }
+
+    h1 {
+      font-size: 30px;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      color: #4b5563;
+      font-size: 16px;
+    }
+
+    .btn {
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 14px 24px;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 22px;
+      margin-bottom: 26px;
+    }
+
+    .card {
+      border: 1px solid #dfe3ea;
+      border-radius: 7px;
+      padding: 24px;
+      background: #fff;
+    }
+
+    .card-title {
+      font-size: 16px;
+      margin-bottom: 26px;
+    }
+
+    .big-value {
+      font-size: 28px;
+      font-weight: 500;
+      margin-bottom: 25px;
+    }
+
+    .green {
+      color: #16a34a;
+    }
+
+    .orange {
+      color: #f59e0b;
+    }
+
+    .small-text {
+      color: #4b5563;
+      font-size: 16px;
+    }
+
+    .risk-bar {
+      width: 155px;
+      height: 12px;
+      display: flex;
+      margin-top: 30px;
+      margin-bottom: 8px;
+    }
+
+    .risk-low {
+      flex: 1;
+      background: #22c55e;
+      border-radius: 3px 0 0 3px;
+    }
+
+    .risk-mid {
+      flex: 1;
+      background: #fbbf24;
+    }
+
+    .risk-high {
+      flex: 1;
+      background: #ef4444;
+      border-radius: 0 3px 3px 0;
+    }
+
+    .risk-pointer {
+      width: 0;
+      height: 0;
+      border-left: 7px solid transparent;
+      border-right: 7px solid transparent;
+      border-bottom: 11px solid #111827;
+      margin-left: 68px;
+    }
+
+    .middle-grid {
+      display: grid;
+      grid-template-columns: 0.9fr 1.5fr;
+      gap: 22px;
+      margin-bottom: 24px;
+    }
+
+    .section-title {
+      font-size: 20px;
+      margin-bottom: 26px;
+    }
+
+    .allocation-content {
+      display: flex;
+      align-items: center;
+      gap: 40px;
+    }
+
+    .pie {
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: conic-gradient(
+        #2563eb 0deg 162deg,
+        #22c55e 162deg 252deg,
+        #f59e0b 252deg 306deg,
+        #8b5cf6 306deg 342deg,
+        #ef4444 342deg 360deg
+      );
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .legend {
+      flex: 1;
+    }
+
+    .legend-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      font-size: 16px;
+    }
+
+    .legend-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+    }
+
+    .blue { background: #2563eb; }
+    .green-bg { background: #22c55e; }
+    .yellow { background: #f59e0b; }
+    .purple { background: #8b5cf6; }
+    .red { background: #ef4444; }
+
+    .table-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .link {
+      color: #2563eb;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 15px;
+    }
+
+    th {
+      text-align: left;
+      color: #374151;
+      font-weight: 500;
+      padding: 14px 0;
+      border-bottom: 1px solid #d1d5db;
+    }
+
+    td {
+      padding: 14px 0;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .overview {
+      margin-top: 5px;
+    }
+
+    .overview-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      margin-top: 20px;
+    }
+
+    .overview-item {
+      padding: 0 24px;
+      border-right: 1px solid #e5e7eb;
+    }
+
+    .overview-item:last-child {
+      border-right: none;
+    }
+
+    .overview-label {
+      color: #374151;
+      margin-bottom: 16px;
+    }
+
+    .overview-value {
+      font-size: 20px;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="logo">Portfolio Tracker</div>
+
+      <div class="nav-item active"><span class="nav-icon">⌂</span>Home</div>
+      <div class="nav-item"><span class="nav-icon">◷</span>Portfolio</div>
+      <div class="nav-item"><span class="nav-icon">↔</span>Transactions</div>
+      <div class="nav-item"><span class="nav-icon">☆</span>Watchlist</div>
+      <div class="nav-item"><span class="nav-icon">♢</span>Risk Analysis</div>
+      <div class="nav-item"><span class="nav-icon">⌁</span>Scenario Simulator</div>
+      <div class="nav-item"><span class="nav-icon">▤</span>Reports</div>
+      <div class="nav-item"><span class="nav-icon">⚙</span>Settings</div>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <span>Guest User</span>
+        <span>♙</span>
+      </div>
+
+      <section class="content">
+        <div class="header-row">
+          <div>
+            <h1>Home</h1>
+            <p class="subtitle">Overview of your portfolio.</p>
+          </div>
+          <button class="btn">+ Add Transaction</button>
+        </div>
+
+        <div class="summary-grid">
+          <div class="card">
+            <div class="card-title">Total Portfolio Value</div>
+            <div class="big-value">$Don't know</div>
+            <div class="small-text">Market Value</div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Total Profit / Loss</div>
+            <div class="big-value green">+$Dont't know</div>
+            <div class="small-text">(+8.29%)</div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Cash Balance</div>
+            <div class="big-value">$Dont't know</div>
+            <div class="small-text">Available to Invest</div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Risk Level</div>
+            <div class="big-value orange">Moderate</div>
+            <div class="risk-bar">
+              <div class="risk-low"></div>
+              <div class="risk-mid"></div>
+              <div class="risk-high"></div>
+            </div>
+            <div class="risk-pointer"></div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Total Positions</div>
+            <div class="big-value">12</div>
+            <div class="small-text">Across 4 Asset Types</div>
+          </div>
+        </div>
+
+        <div class="middle-grid">
+          <div class="card">
+            <h2 class="section-title">Asset Allocation</h2>
+            <div class="allocation-content">
+              <div class="pie">45%</div>
+              <div class="legend">
+                <div class="legend-row"><div class="legend-left"><span class="dot blue"></span>Stocks</div><span>45%</span></div>
+                <div class="legend-row"><div class="legend-left"><span class="dot green-bg"></span>ETFs</div><span>25%</span></div>
+                <div class="legend-row"><div class="legend-left"><span class="dot yellow"></span>Options</div><span>15%</span></div>
+                <div class="legend-row"><div class="legend-left"><span class="dot purple"></span>Futures</div><span>10%</span></div>
+                <div class="legend-row"><div class="legend-left"><span class="dot red"></span>Cash</div><span>5%</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="table-header">
+              <h2 class="section-title" style="margin-bottom: 0;">Recent Transactions</h2>
+              <span class="link">View All</span>
+            </div>
+
+            <table>
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Type</th>
+                  <th>Asset</th>
+                  <th>Quantity</th>
+                  <th>Price</th>
+                  <th>Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>21 May 2024</td>
+                  <td class="green">Buy</td>
+                  <td>AAPL (Stock)</td>
+                  <td>10</td>
+                  <td>$191.20</td>
+                  <td>$1,912.00</td>
+                </tr>
+                <tr>
+                  <td>20 May 2024</td>
+                  <td class="green">Buy</td>
+                  <td>SPY (ETF)</td>
+                  <td>5</td>
+                  <td>$530.15</td>
+                  <td>$2,650.75</td>
+                </tr>
+                <tr>
+                  <td>19 May 2024</td>
+                  <td style="color:#ef4444;">Sell</td>
+                  <td>TSLA 240621 C200 (Option)</td>
+                  <td>2</td>
+                  <td>$12.45</td>
+                  <td>$2,490.00</td>
+                </tr>
+                <tr>
+                  <td>18 May 2024</td>
+                  <td class="green">Buy</td>
+                  <td>ESM24 (Future)</td>
+                  <td>1</td>
+                  <td>$5,215.00</td>
+                  <td>$5,215.00</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card overview">
+          <h2 class="section-title">Portfolio Overview</h2>
+          <div class="overview-grid">
+            <div class="overview-item">
+              <div class="overview-label">Invested Amount</div>
+              <div class="overview-value">$22,858.30</div>
+            </div>
+            <div class="overview-item">
+              <div class="overview-label">Today's Change</div>
+              <div class="overview-value green">+$256.40<br><span style="font-size:16px;">(+1.05%)</span></div>
+            </div>
+            <div class="overview-item">
+              <div class="overview-label">Unrealized P/L</div>
+              <div class="overview-value green">+$1,892.30</div>
+            </div>
+            <div class="overview-item">
+              <div class="overview-label">Realized P/L</div>
+              <div class="overview-value green">+$0.00</div>
+            </div>
+            <div class="overview-item">
+              <div class="overview-label">Total Return</div>
+              <div class="overview-value green">+8.29%</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
